@@ -16,7 +16,6 @@ Route::middleware(['api'])->group(function () {
         Route::post('/send-sms', [SmsController::class, 'sendSms']);
         Route::get('/sms-reports', [SmsController::class, 'getSmsReports']);
         Route::get('/sms-reports/{id}', [SmsController::class, 'getSmsReportDetail']);
-        Route::get('/sms-reports/filter/{date}', [SmsController::class, 'filterSmsReportsByDate']);
     });
 });
 

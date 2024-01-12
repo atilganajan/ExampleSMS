@@ -51,10 +51,13 @@ class SmsController extends Controller
                 'success' => [
                     'code' => 500,
                     'message' => 'Unexpected error',
-
                 ]
             ], 500);
         }
+    }
+
+    public function getSmsReportDetail(){
+
     }
 
 }

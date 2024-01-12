@@ -16,8 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->index();
             $table->string('number');
             $table->text('message');
-            $table->timestamp('send_time');
-            $table->timestamps();
+            $table->timestamp('send_time')->useCurrent();
         });
     }
 

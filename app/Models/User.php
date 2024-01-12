@@ -36,4 +36,8 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function smsReports(){
+       return $this->hasMany(SmsReport::class);
+    }
+
 }

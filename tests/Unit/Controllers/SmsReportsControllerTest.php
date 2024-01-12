@@ -105,8 +105,53 @@ class SmsReportsControllerTest extends TestCase
                     ],
                 ],
             ]);
+    }
 
+    public function test_get_sms_report_detail_not_found(){
 
+        $user = User::create([
+            'username' => 'testuser',
+            'password' => 'testpassword',
+        ]);
+
+        $this->actingAs($user);
+
+        $response = $this->json('GET', '/api/sms-reports/9999');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_get_sms_report_detail_passes(){
+
+        $user = User::create([
+            'username' => 'testuser',
+            'password' => 'testpassword',
+        ]);
+
+        $this->actingAs($user);
+
+        $smsReport = SmsReport::create([
+            'user_id' => $user->id,
+            'number' => 123456,
+            'message' => 'test message',
+            'send_time' => '2024-01-12 12:30:00',
+        ]);
+
+        $response = $this->json('GET', '/api/sms-reports/'.$smsReport->id);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => [
+                    'code' => 200,
+                    'message' => 'successful',
+                    'data' => [
+                        'id' => $smsReport->id,
+                        'number' => $smsReport->number,
+                        'message' => $smsReport->message,
+                        'send_time' => $smsReport->send_time
+                    ],
+                ],
+            ]);
     }
 
 

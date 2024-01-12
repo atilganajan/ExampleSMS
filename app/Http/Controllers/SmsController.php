@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SmsReportsRequest;
 use App\Http\Resources\SmsReportResource;
+use App\Models\SmsReport;
 use Illuminate\Http\Request;
 
 class SmsController extends Controller
@@ -56,8 +57,14 @@ class SmsController extends Controller
         }
     }
 
-    public function getSmsReportDetail(){
-
+    public function getSmsReportDetail(SmsReport $smsReport){
+        return response()->json([
+            'success' => [
+                'code' => 200,
+                'message' => 'successful',
+                'data' => new SmsReportResource($smsReport)
+            ]
+        ]);
     }
 
 }

@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Controllers;
 
-use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;

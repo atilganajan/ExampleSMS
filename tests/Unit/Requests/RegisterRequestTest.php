@@ -4,10 +4,12 @@ namespace Tests\Unit\Requests;
 
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class RegisterRequestTest extends TestCase
 {
+    use RefreshDatabase;
     public function test_register_request_validation_passes()
     {
         $request = new RegisterRequest([

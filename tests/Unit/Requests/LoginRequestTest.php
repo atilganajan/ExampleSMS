@@ -3,10 +3,12 @@
 namespace Tests\Unit\Requests;
 
 use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LoginRequestTest extends TestCase
 {
+    use RefreshDatabase;
     public function test_login_request_validation_passes()
     {
         $request = new LoginRequest([

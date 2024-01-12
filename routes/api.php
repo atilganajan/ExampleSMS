@@ -5,7 +5,7 @@ use App\Http\Controllers\SmsController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware(['api', 'auth:api'])->group(function () {
+Route::middleware(['api'])->group(function () {
 
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);

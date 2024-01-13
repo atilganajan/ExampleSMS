@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SendBulkSmsJob implements ShouldQueue
 {
@@ -41,8 +42,7 @@ class SendBulkSmsJob implements ShouldQueue
                 ]);
             }
         } catch (\Exception $e) {
-
-
+            Log::error("File: " . $e->getFile() . " Line: " . $e->getLine() . " Error: " . $e->getMessage());
         }
     }
 }

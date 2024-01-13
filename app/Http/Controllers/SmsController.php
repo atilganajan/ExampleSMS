@@ -8,6 +8,7 @@ use App\Http\Resources\SmsReportResource;
 use App\Jobs\SendBulkSmsJob;
 use App\Models\SmsReport;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class SmsController extends Controller
 {
@@ -35,10 +36,11 @@ class SmsController extends Controller
                 ]
             ]);
         }catch (\Exception $e){
+            Log::error("File: " . $e->getFile() . " Line: " . $e->getLine() . " Error: " . $e->getMessage());
             return response()->json([
                 'success' => [
                     'code' => 500,
-                    'message' => 'Unexpected error'.$e->getMessage(),
+                    'message' => 'Unexpected error',
                 ]
             ], 500);
         }
@@ -68,6 +70,7 @@ class SmsController extends Controller
                 ]
             ]);
         } catch (\Exception $e) {
+            Log::error("File: " . $e->getFile() . " Line: " . $e->getLine() . " Error: " . $e->getMessage());
             return response()->json([
                 'success' => [
                     'code' => 500,

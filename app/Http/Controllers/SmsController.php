@@ -12,6 +12,61 @@ use Illuminate\Support\Facades\Log;
 
 class SmsController extends Controller
 {
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/send-sms",
+     *     summary="Send SMS",
+     *     description="Endpoint to send SMS messages.",
+     *     operationId="sendSms",
+     *     tags={"SMS"},
+     *     security={
+     *         {"bearerAuth": {}}
+     *     },
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"message"},
+     *             properties={
+     *                 @OA\Property(property="message", type="string", example="Your SMS message content.")
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="object",
+     *                 @OA\Property(property="code", type="integer", example=200),
+     *                 @OA\Property(property="message", type="string", example="successful")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Unauthorized")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Unexpected error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="object",
+     *                 @OA\Property(property="code", type="integer", example=500),
+     *                 @OA\Property(property="message", type="string", example="Unexpected error")
+     *             )
+     *         )
+     *     ),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     */
+
+
     public function sendSms(SendSmsRequest $request)
     {
         try {
@@ -38,13 +93,77 @@ class SmsController extends Controller
         }catch (\Exception $e){
             Log::error("File: " . $e->getFile() . " Line: " . $e->getLine() . " Error: " . $e->getMessage());
             return response()->json([
-                'success' => [
+                'error' => [
                     'code' => 500,
                     'message' => 'Unexpected error',
                 ]
             ], 500);
         }
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/sms-reports",
+     *     summary="sms-reports",
+     *     description="Endpoint to send SMS messages.",
+     *     operationId="sms-reports",
+     *     tags={"SMS"},
+     *     security={
+     *         {"bearerAuth": {}}
+     *     },
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"message"},
+     *             properties={
+     *                 @OA\Property(property="start", type="date", example="2024-01-13 01:53:20"),
+     *                 @OA\Property(property="end", type="date", example="2024-01-13 01:53:50")
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="object",
+     *                 @OA\Property(property="code", type="integer", example=200),
+     *                 @OA\Property(property="message", type="string", example="successful"),
+     *     @OA\Property(property="data", type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="user_id", type="integer", example=1),
+     *                         @OA\Property(property="message_id", type="integer", example=1),
+     *                         @OA\Property(property="number", type="string", example=123),
+     *                         @OA\Property(property="message", type="string", example="test message"),
+     *                         @OA\Property(property="send_time", type="string", example="2024-01-13 01:53:20")
+     *                     )
+     *                 )
+     *
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Unauthorized")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Unexpected error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="object",
+     *                 @OA\Property(property="code", type="integer", example=500),
+     *                 @OA\Property(property="message", type="string", example="Unexpected error")
+     *             )
+     *         )
+     *     ),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     */
 
     public function getSmsReports(SmsRequest $request)
     {
@@ -72,13 +191,19 @@ class SmsController extends Controller
         } catch (\Exception $e) {
             Log::error("File: " . $e->getFile() . " Line: " . $e->getLine() . " Error: " . $e->getMessage());
             return response()->json([
-                'success' => [
+                'error' => [
                     'code' => 500,
                     'message' => 'Unexpected error',
                 ]
             ], 500);
         }
     }
+
+
+
+   
+
+
 
     public function getSmsReportDetail(SmsReport $smsReport){
         return response()->json([

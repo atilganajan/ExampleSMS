@@ -26,7 +26,7 @@
 11.  `php artisan queue:work`
 
 ## Swagger UI
-- Swagger url `http://localhost:8000/api/documentation`
+- Swagger url `BASE_URL/api/documentation`
 
 ## Unit Test
 php artisan test

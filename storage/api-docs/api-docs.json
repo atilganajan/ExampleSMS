@@ -230,7 +230,7 @@
                 "tags": [
                     "SMS"
                 ],
-                "summary": "Send SMS",
+                "summary": "Send sms",
                 "description": "Endpoint to send SMS messages.",
                 "operationId": "sendSms",
                 "requestBody": {
@@ -327,37 +327,33 @@
             }
         },
         "/api/sms-reports": {
-            "post": {
+            "get": {
                 "tags": [
                     "SMS"
                 ],
                 "summary": " Get sms reports",
                 "description": "Endpoint to send SMS messages.",
                 "operationId": "sms-reports",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "message"
-                                ],
-                                "properties": {
-                                    "start": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2024-01-13 01:53:20"
-                                    },
-                                    "end": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2024-01-13 01:53:50"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                "parameters": [
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "description": "Start parameter (2024-01-13 01:53:20)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "end",
+                        "in": "query",
+                        "description": "End parameter (2024-01-14 01:53:20)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -465,8 +461,8 @@
                 ]
             }
         },
-        "/api/sms-report/{smsReport}": {
-            "post": {
+        "/api/sms-reports/{id}": {
+            "get": {
                 "tags": [
                     "SMS"
                 ],
@@ -475,7 +471,7 @@
                 "operationId": "sms-report-detail",
                 "parameters": [
                     {
-                        "name": "smsReport",
+                        "name": "id",
                         "in": "path",
                         "description": "ID of the SMS report",
                         "required": true,

@@ -4,13 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SmsRequest extends FormRequest
+class SmsReportRequest extends FormRequest
 {
-    public function authorize()
-    {
-        return true; // İsteği her zaman kabul et
-    }
-
     public function rules()
     {
         return [

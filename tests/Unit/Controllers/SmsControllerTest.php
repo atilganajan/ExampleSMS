@@ -71,7 +71,8 @@ class SmsControllerTest extends TestCase
         $response = $this->postJson('/api/send-sms', ['message' => 'Test message']);
 
         $response->assertStatus(500);
-        $response->assertJson(['success' => ['code' => 500, 'message' => 'Unexpected errorTest exception']]);
+
+        $response->assertJson(['error' => ['code' => 500, 'message' => 'Unexpected error']]);
     }
 
     public function test_get_sms_reports()

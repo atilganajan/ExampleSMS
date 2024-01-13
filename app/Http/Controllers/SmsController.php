@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SendSmsRequest;
-use App\Http\Requests\SmsRequest;
+use App\Http\Requests\SmsReportRequest;
 use App\Http\Resources\SmsReportResource;
 use App\Jobs\SendBulkSmsJob;
 use App\Models\SmsReport;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -111,15 +113,23 @@ class SmsController extends Controller
      *     security={
      *         {"bearerAuth": {}}
      *     },
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(
-     *             type="object",
-     *             required={"message"},
-     *             properties={
-     *                 @OA\Property(property="start", type="date", example="2024-01-13 01:53:20"),
-     *                 @OA\Property(property="end", type="date", example="2024-01-13 01:53:50")
-     *             }
-     *         ),
+     *     @OA\Parameter(
+     *         name="start",
+     *         in="query",
+     *         description="Start parameter (2024-01-13 01:53:20)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="end",
+     *         in="query",
+     *         description="End parameter (2024-01-14 01:53:20)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
      *     ),
      *
      *     @OA\Response(
@@ -166,7 +176,7 @@ class SmsController extends Controller
      * )
      */
 
-    public function getSmsReports(SmsRequest $request)
+    public function getSmsReports(SmsReportRequest $request)
     {
         try {
             $start = $request->input('start');
@@ -203,7 +213,7 @@ class SmsController extends Controller
 
     /**
      * @OA\GET(
-     *     path="/api/sms-report/{smsReport}",
+     *     path="/api/sms-reports/{id}",
      *     summary="Get sms report detail",
      *     description="Endpoint to send SMS messages.",
      *     operationId="sms-report-detail",
@@ -212,7 +222,7 @@ class SmsController extends Controller
      *         {"bearerAuth": {}}
      *     },
      *     @OA\Parameter(
-     *          name="smsReport",
+     *          name="id",
      *          description="ID of the SMS report",
      *          required=true,
      *          in="path",
@@ -262,15 +272,28 @@ class SmsController extends Controller
      */
 
 
-    public function getSmsReportDetail(SmsReport $smsReport)
+    public function getSmsReportDetail(Request $smsReport,$id)
     {
-        return response()->json([
-            'success' => [
-                'code' => 200,
-                'message' => 'successful',
-                'data' => new SmsReportResource($smsReport)
-            ]
-        ]);
+        try {
+            $user = auth()->user();
+
+            $smsReport = $user->smsReports()->findOrFail($id);
+
+            return response()->json([
+                'success' => [
+                    'code' => 200,
+                    'message' => 'successful',
+                    'data' => new SmsReportResource($smsReport)
+                ]
+            ]);
+        }catch (ModelNotFoundException $e){
+            return response()->json([
+                'error' => [
+                    'code' => 404,
+                    'message' => 'Unexpected error',
+                ]
+            ], 404);
+        }
     }
 
 }

@@ -4,6 +4,7 @@ namespace Requests\Auth;
 
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class LoginRequestTest extends TestCase
@@ -75,7 +76,7 @@ class LoginRequestTest extends TestCase
     public function test_login_request_validation_fails_on_long_username()
     {
         $request = new LoginRequest([
-            'username' => 'long_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            'username' => Str::random(21),
             'password' => 'validpassword',
         ]);
 
@@ -89,7 +90,7 @@ class LoginRequestTest extends TestCase
     {
         $request = new LoginRequest([
             'username' => 'validusername',
-            'password' => 'long_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            'password' => Str::random(21),
         ]);
 
         $validator = $this->app['validator']->make($request->all(), $request->rules());

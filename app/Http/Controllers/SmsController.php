@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SendSmsRequest;
-use App\Http\Requests\SmsReportsRequest;
+use App\Http\Requests\SmsRequest;
 use App\Http\Resources\SmsReportResource;
 use App\Jobs\SendBulkSmsJob;
 use App\Models\SmsReport;
@@ -44,7 +44,7 @@ class SmsController extends Controller
         }
     }
 
-    public function getSmsReports(SmsReportsRequest $request)
+    public function getSmsReports(SmsRequest $request)
     {
         try {
             $start = $request->input('start');

@@ -2,15 +2,77 @@
 
 namespace Tests\Unit\Controllers;
 
+use App\Http\Requests\SendSmsRequest;
+use App\Jobs\SendBulkSmsJob;
 use App\Models\Message;
 use App\Models\SmsReport;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Queue\Queue;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
-class SmsReportsControllerTest extends TestCase
+class SmsControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+
+    public function test_send_sms_passes()
+    {
+        $user = User::create([
+            'username' => 'testuser',
+            'password' => 'testpassword',
+        ]);
+
+        $this->actingAs($user);
+
+        $message = 'Test message';
+        $response = $this->postJson('/api/send-sms', ['message' => $message]);
+
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => ['code' => 200, 'message' => 'successful']]);
+
+        $this->assertDatabaseHas('messages', ['user_id' => $user->id, 'message' => $message]);
+
+        $this->assertEquals(1, Cache::get('sms_count'));
+
+        Bus::fake();
+
+        Bus::assertNotDispatched(SendBulkSmsJob::class);
+
+        for ($i = 1; $i <= 498; $i++) {
+           $this->postJson('/api/send-sms', ['message' => 'Test message']);
+        }
+
+        Bus::assertNotDispatched(SendBulkSmsJob::class);
+
+        $this->postJson('/api/send-sms', ['message' => 'Test message 500']);
+
+        Bus::assertDispatched(SendBulkSmsJob::class);
+        $this->assertEquals(0, Cache::get('sms_count'));
+    }
+
+    public function test_sendSms_unexpectedError()
+    {
+        $user = User::create([
+            'username' => 'testuser',
+            'password' => 'testpassword',
+        ]);
+
+        $this->actingAs($user);
+
+        $this->mock(SendSmsRequest::class, function ($mock) {
+            $mock->shouldReceive('only')->once()->andThrow(new \Exception('Test exception'));
+        });
+
+
+        $response = $this->postJson('/api/send-sms', ['message' => 'Test message']);
+
+        $response->assertStatus(500);
+        $response->assertJson(['success' => ['code' => 500, 'message' => 'Unexpected errorTest exception']]);
+    }
 
     public function test_get_sms_reports()
     {
@@ -35,7 +97,7 @@ class SmsReportsControllerTest extends TestCase
         ]);
 
 
-        $response = $this->json('GET', '/api/sms-reports');
+        $response = $this->getJson('/api/sms-reports');
 
 
         $response->assertStatus(200)
@@ -95,12 +157,10 @@ class SmsReportsControllerTest extends TestCase
         ]);
 
 
-
-        $response = $this->json('GET', '/api/sms-reports', [
+        $response =$this->json('GET', '/api/sms-reports', [
             'start' => '2024-01-12 12:30:00',
             'end' => '2024-01-12 13:00:00',
         ]);
-
 
         $response->assertJsonMissing([
             'id' => $smsReportSecond->id,
@@ -138,7 +198,7 @@ class SmsReportsControllerTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->json('GET', '/api/sms-reports/9999');
+        $response = $this->getJson( '/api/sms-reports/9999');
 
         $response->assertStatus(404);
     }
@@ -163,7 +223,7 @@ class SmsReportsControllerTest extends TestCase
             'send_time' => '2024-01-12 12:30:00',
         ]);
 
-        $response = $this->json('GET', '/api/sms-reports/'.$smsReport->id);
+        $response = $this->getJson( '/api/sms-reports/'.$smsReport->id);
 
         $response->assertStatus(200)
             ->assertJson([

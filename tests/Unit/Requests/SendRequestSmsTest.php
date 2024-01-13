@@ -3,7 +3,7 @@
 namespace Tests\Unit\Requests;
 
 use App\Http\Requests\SendSmsRequest;
-use App\Http\Requests\SmsReportsRequest;
+use App\Http\Requests\SmsRequest;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 

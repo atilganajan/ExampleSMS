@@ -5,6 +5,7 @@ namespace Requests\Auth;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class RegisterRequestTest extends TestCase
@@ -77,7 +78,7 @@ class RegisterRequestTest extends TestCase
     {
         $request = new RegisterRequest([
             'username' => 'validusername',
-            'password' => 'long_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            'password' => Str::random(21),
         ]);
 
         $validator = $this->app['validator']->make($request->all(), $request->rules());
@@ -89,7 +90,7 @@ class RegisterRequestTest extends TestCase
     public function test_register_request_validation_fails_on_long_username()
     {
         $request = new RegisterRequest([
-            'username' => 'long_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            'username' => Str::random(21),
             'password' => 'validpassword',
         ]);
 

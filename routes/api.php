@@ -13,7 +13,7 @@ Route::middleware(['api'])->group(function () {
     Route::middleware(['auth:api'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
 
-        Route::post('/send-sms', [SmsController::class, 'sendSms']);
+        Route::post('/send-sms', [SmsController::class, 'sendSms'])->withoutMiddleware("throttle:api");
         Route::get('/sms-reports', [SmsController::class, 'getSmsReports']);
         Route::get('/sms-reports/{smsReport}', [SmsController::class, 'getSmsReportDetail']);
     });

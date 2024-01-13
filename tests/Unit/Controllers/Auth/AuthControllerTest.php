@@ -43,6 +43,14 @@ class AuthControllerTest extends TestCase
             ->assertJsonStructure(['access_token', 'token_type', 'expires_in']);
     }
 
+
+    public function test_logout_unauthenticated()
+    {
+        $response = $this->postJson('/api/logout');
+        $response->assertStatus(401)
+            ->assertJson( ['message'=>'Unauthenticated.']);
+    }
+
     public function test_logout()
     {
         $user = User::create([

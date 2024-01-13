@@ -11,6 +11,7 @@ class SmsReport extends Model
 
     protected $fillable = [
         'user_id',
+        'message_id',
         'number',
         'message',
         'send_time',
@@ -18,6 +19,7 @@ class SmsReport extends Model
 
     protected $guarded = [
         'user_id',
+        'message_id',
         'send_time',
     ];
 

@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('sms_reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade')->index();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->index('fk_sms_reports_user');
+            $table->foreignId('message_id')->constrained('messages')->onDelete('cascade')->index('fk_sms_reports_message');
             $table->string('number');
             $table->text('message');
-            $table->timestamp('send_time')->useCurrent();
+            $table->timestamp('send_time');
         });
     }
 

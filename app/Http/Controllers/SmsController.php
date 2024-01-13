@@ -2,26 +2,46 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SendSmsRequest;
 use App\Http\Requests\SmsReportsRequest;
 use App\Http\Resources\SmsReportResource;
+use App\Jobs\SendBulkSmsJob;
 use App\Models\SmsReport;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class SmsController extends Controller
 {
-    public function sendSms(Request $request)
+    public function sendSms(SendSmsRequest $request)
     {
-        $data = $request->only("message");
+        try {
+            $data = $request->only("message");
+            $user = auth()->user();
 
-        $user = auth()->user();
+            $user->messages()->create([
+                'message' => $data['message'],
+            ]);
 
-        $smsReport = $user->smsReports()->create([
-            "message" => $data["message"],
-            "number" => rand(1, 100),
-        ]);
+            $smsCount = Cache::increment('sms_count', 1);
 
-        return response()->json("success");
+            if ($smsCount == 500) {
+                dispatch(new SendBulkSmsJob());
+                Cache::forever('sms_count', 0);
+            }
 
+            return response()->json([
+                'success' => [
+                    'code' => 200,
+                    'message' => 'successful',
+                ]
+            ]);
+        }catch (\Exception $e){
+            return response()->json([
+                'success' => [
+                    'code' => 500,
+                    'message' => 'Unexpected error'.$e->getMessage(),
+                ]
+            ], 500);
+        }
     }
 
     public function getSmsReports(SmsReportsRequest $request)

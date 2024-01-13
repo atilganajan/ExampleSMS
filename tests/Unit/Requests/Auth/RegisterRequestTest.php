@@ -1,17 +1,18 @@
 <?php
 
-namespace Tests\Unit\Requests;
+namespace Requests\Auth;
 
-use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class LoginRequestTest extends TestCase
+class RegisterRequestTest extends TestCase
 {
     use RefreshDatabase;
-    public function test_login_request_validation_passes()
+    public function test_register_request_validation_passes()
     {
-        $request = new LoginRequest([
+        $request = new RegisterRequest([
             'username' => 'validusername',
             'password' => 'validpassword',
         ]);
@@ -21,9 +22,9 @@ class LoginRequestTest extends TestCase
         $this->assertFalse($validator->fails());
     }
 
-    public function test_login_request_validation_fails_on_missing_username()
+    public function test_register_request_validation_fails_on_missing_username()
     {
-        $request = new LoginRequest([
+        $request = new RegisterRequest([
             'password' => 'validpassword',
         ]);
 
@@ -33,9 +34,9 @@ class LoginRequestTest extends TestCase
         $this->assertArrayHasKey('username', $validator->errors()->toArray());
     }
 
-    public function test_login_request_validation_fails_on_missing_password()
+    public function test_register_request_validation_fails_on_missing_password()
     {
-        $request = new LoginRequest([
+        $request = new RegisterRequest([
             'username' => 'validusername',
         ]);
 
@@ -45,22 +46,9 @@ class LoginRequestTest extends TestCase
         $this->assertArrayHasKey('password', $validator->errors()->toArray());
     }
 
-    public function test_login_request_validation_fails_on_short_username()
+    public function test_register_request_validation_fails_on_short_password()
     {
-        $request = new LoginRequest([
-            'username' => 'short',
-            'password' => 'validpassword',
-        ]);
-
-        $validator = $this->app['validator']->make($request->all(), $request->rules());
-
-        $this->assertTrue($validator->fails());
-        $this->assertArrayHasKey('username', $validator->errors()->toArray());
-    }
-
-    public function test_login_request_validation_fails_on_short_password()
-    {
-        $request = new LoginRequest([
+        $request = new RegisterRequest([
             'username' => 'validusername',
             'password' => 'short',
         ]);
@@ -71,10 +59,36 @@ class LoginRequestTest extends TestCase
         $this->assertArrayHasKey('password', $validator->errors()->toArray());
     }
 
-
-    public function test_login_request_validation_fails_on_long_username()
+    public function test_register_request_validation_fails_on_short_username()
     {
-        $request = new LoginRequest([
+        $request = new RegisterRequest([
+            'username' => 'short',
+            'password' => 'validpassword',
+        ]);
+
+        $validator = $this->app['validator']->make($request->all(), $request->rules());
+
+        $this->assertTrue($validator->fails());
+        $this->assertArrayHasKey('username', $validator->errors()->toArray());
+    }
+
+
+    public function test_register_request_validation_fails_on_long_password()
+    {
+        $request = new RegisterRequest([
+            'username' => 'validusername',
+            'password' => 'long_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        ]);
+
+        $validator = $this->app['validator']->make($request->all(), $request->rules());
+
+        $this->assertTrue($validator->fails());
+        $this->assertArrayHasKey('password', $validator->errors()->toArray());
+    }
+
+    public function test_register_request_validation_fails_on_long_username()
+    {
+        $request = new RegisterRequest([
             'username' => 'long_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
             'password' => 'validpassword',
         ]);
@@ -85,17 +99,24 @@ class LoginRequestTest extends TestCase
         $this->assertArrayHasKey('username', $validator->errors()->toArray());
     }
 
-    public function test_login_request_validation_fails_on_long_password()
+
+    public function test_register_request_validation_fails_on_duplicate_username()
     {
-        $request = new LoginRequest([
-            'username' => 'validusername',
-            'password' => 'long_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        User::create([
+            'username' => 'existinguser',
+            'password' => 'validpassword',
+        ]);
+
+        $request = new RegisterRequest([
+            'username' => 'existinguser',
+            'password' => 'validpassword',
         ]);
 
         $validator = $this->app['validator']->make($request->all(), $request->rules());
 
         $this->assertTrue($validator->fails());
-        $this->assertArrayHasKey('password', $validator->errors()->toArray());
+        $this->assertArrayHasKey('username', $validator->errors()->toArray());
     }
+
 
 }

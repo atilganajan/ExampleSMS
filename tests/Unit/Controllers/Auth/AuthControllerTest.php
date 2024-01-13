@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Unit\Controllers;
+namespace Controllers\Auth;
 
 use App\Models\User;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
 {

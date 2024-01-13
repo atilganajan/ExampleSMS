@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Controllers;
 
+use App\Models\Message;
 use App\Models\SmsReport;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,13 +23,17 @@ class SmsReportsControllerTest extends TestCase
 
         $this->actingAs($user);
 
+        $message = $user->messages()->create([
+            'message' => 'test message',
+        ]);
 
-        $smsReport = SmsReport::create([
+        $smsReport = $message->smsReport()->create([
             'user_id' => $user->id,
             'number' => 123456,
-            'message' => 'test message',
+            'message' => $message->message,
             'send_time' => '2024-01-12 12:30:00',
         ]);
+
 
         $response = $this->json('GET', '/api/sms-reports');
 
@@ -41,6 +46,8 @@ class SmsReportsControllerTest extends TestCase
                     'data' => [
                         [
                             'id' => $smsReport->id,
+                            'user_id'=>$smsReport->user_id,
+                            'message_id'=>$smsReport->message_id,
                             'number' => $smsReport->number,
                             'message' => $smsReport->message,
                             'send_time' => $smsReport->send_time
@@ -63,19 +70,30 @@ class SmsReportsControllerTest extends TestCase
         $this->actingAs($user);
 
 
-        $smsReport = SmsReport::create([
+
+        $message = $user->messages()->create([
+            'message' => 'test message',
+        ]);
+
+        $smsReport = $message->smsReport()->create([
             'user_id' => $user->id,
             'number' => 123456,
-            'message' => 'test message',
+            'message' => $message->message,
             'send_time' => '2024-01-12 12:30:00',
         ]);
 
-        $smsReportSecond = SmsReport::create([
+
+        $messageSecond = $user->messages()->create([
+            'message' => 'test message second',
+        ]);
+
+        $smsReportSecond = $messageSecond->smsReport()->create([
             'user_id' => $user->id,
-            'number' => 123457,
-            'message' => 'another test message',
+            'number' => 1234567,
+            'message' => $messageSecond->message,
             'send_time' => '2024-01-12 13:30:00',
         ]);
+
 
 
         $response = $this->json('GET', '/api/sms-reports', [
@@ -83,8 +101,10 @@ class SmsReportsControllerTest extends TestCase
             'end' => '2024-01-12 13:00:00',
         ]);
 
+
         $response->assertJsonMissing([
-            'user_id' => $smsReportSecond->user_id,
+            'id' => $smsReportSecond->id,
+            'message_id'=>$smsReportSecond->message_id,
             'number' => $smsReportSecond->number,
             'message' => $smsReportSecond->message,
             'send_time' => $smsReportSecond->send_time,
@@ -98,6 +118,8 @@ class SmsReportsControllerTest extends TestCase
                     'data' => [
                         [
                             'id' => $smsReport->id,
+                            'user_id'=>$smsReport->user_id,
+                            'message_id'=>$smsReport->message_id,
                             'number' => $smsReport->number,
                             'message' => $smsReport->message,
                             'send_time' => $smsReport->send_time
@@ -130,10 +152,14 @@ class SmsReportsControllerTest extends TestCase
 
         $this->actingAs($user);
 
-        $smsReport = SmsReport::create([
+        $message = $user->messages()->create([
+            'message' => 'test message',
+        ]);
+
+        $smsReport = $message->smsReport()->create([
             'user_id' => $user->id,
             'number' => 123456,
-            'message' => 'test message',
+            'message' => $message->message,
             'send_time' => '2024-01-12 12:30:00',
         ]);
 

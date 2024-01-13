@@ -19,7 +19,7 @@
      
 6. Uygulama anahtarını oluşturun: `php artisan key:generate`
 
-7. `JWT Secret token'ı üretin `php artisan jwt:secret`
+7. JWT Secret token'ı üretin `php artisan jwt:secret`
 
 8. migrationları çalıştrın: `php artisan migrate`
  

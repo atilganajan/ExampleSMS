@@ -17,7 +17,7 @@ class SmsController extends Controller
     /**
      * @OA\Post(
      *     path="/api/send-sms",
-     *     summary="Send SMS",
+     *     summary="Send sms",
      *     description="Endpoint to send SMS messages.",
      *     operationId="sendSms",
      *     tags={"SMS"},
@@ -90,7 +90,7 @@ class SmsController extends Controller
                     'message' => 'successful',
                 ]
             ]);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             Log::error("File: " . $e->getFile() . " Line: " . $e->getLine() . " Error: " . $e->getMessage());
             return response()->json([
                 'error' => [
@@ -104,7 +104,7 @@ class SmsController extends Controller
     /**
      * @OA\Post(
      *     path="/api/sms-reports",
-     *     summary="sms-reports",
+     *     summary=" Get sms reports",
      *     description="Endpoint to send SMS messages.",
      *     operationId="sms-reports",
      *     tags={"SMS"},
@@ -119,8 +119,9 @@ class SmsController extends Controller
      *                 @OA\Property(property="start", type="date", example="2024-01-13 01:53:20"),
      *                 @OA\Property(property="end", type="date", example="2024-01-13 01:53:50")
      *             }
-     *         )
+     *         ),
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Successful operation",
@@ -200,12 +201,69 @@ class SmsController extends Controller
     }
 
 
+    /**
+     * @OA\Post(
+     *     path="/api/sms-report/{smsReport}",
+     *     summary="Get sms report detail",
+     *     description="Endpoint to send SMS messages.",
+     *     operationId="sms-report-detail",
+     *     tags={"SMS"},
+     *     security={
+     *         {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *          name="smsReport",
+     *          description="ID of the SMS report",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     * @OA\Response(
+     *      response=200,
+     *      description="Successful operation",
+     *      @OA\JsonContent(
+     *          @OA\Property(property="success", type="object",
+     *              @OA\Property(property="code", type="integer"),
+     *              @OA\Property(property="message", type="string"),
+     *              @OA\Property(property="data", type="object",
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="user_id", type="integer", example=1),
+     *                         @OA\Property(property="message_id", type="integer", example=1),
+     *                         @OA\Property(property="number", type="string", example=123),
+     *                         @OA\Property(property="message", type="string", example="test message"),
+     *                         @OA\Property(property="send_time", type="string", example="2024-01-13 01:53:20")
+     *              )
+     *          )
+     *      )
+     * ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Unauthorized")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Unexpected error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="object",
+     *                 @OA\Property(property="code", type="integer", example=404),
+     *                 @OA\Property(property="message", type="string", example="Not Found")
+     *             )
+     *         )
+     *     ),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     */
 
-   
 
-
-
-    public function getSmsReportDetail(SmsReport $smsReport){
+    public function getSmsReportDetail(SmsReport $smsReport)
+    {
         return response()->json([
             'success' => [
                 'code' => 200,

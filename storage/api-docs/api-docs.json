@@ -331,7 +331,7 @@
                 "tags": [
                     "SMS"
                 ],
-                "summary": "sms-reports",
+                "summary": " Get sms reports",
                 "description": "Endpoint to send SMS messages.",
                 "operationId": "sms-reports",
                 "requestBody": {
@@ -416,6 +416,22 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
                     "500": {
                         "description": "Unexpected error",
                         "content": {
@@ -431,6 +447,127 @@
                                                 "message": {
                                                     "type": "string",
                                                     "example": "Unexpected error"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/sms-report/{smsReport}": {
+            "post": {
+                "tags": [
+                    "SMS"
+                ],
+                "summary": "Get sms report detail",
+                "description": "Endpoint to send SMS messages.",
+                "operationId": "sms-report-detail",
+                "parameters": [
+                    {
+                        "name": "smsReport",
+                        "in": "path",
+                        "description": "ID of the SMS report",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "integer"
+                                                },
+                                                "message": {
+                                                    "type": "string"
+                                                },
+                                                "data": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "user_id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "message_id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "number": {
+                                                            "type": "string",
+                                                            "example": 123
+                                                        },
+                                                        "message": {
+                                                            "type": "string",
+                                                            "example": "test message"
+                                                        },
+                                                        "send_time": {
+                                                            "type": "string",
+                                                            "example": "2024-01-13 01:53:20"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "integer",
+                                                    "example": 404
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Not Found"
                                                 }
                                             },
                                             "type": "object"

@@ -102,7 +102,7 @@ class SmsController extends Controller
     }
 
     /**
-     * @OA\Post(
+     * @OA\GET(
      *     path="/api/sms-reports",
      *     summary=" Get sms reports",
      *     description="Endpoint to send SMS messages.",
@@ -202,7 +202,7 @@ class SmsController extends Controller
 
 
     /**
-     * @OA\Post(
+     * @OA\GET(
      *     path="/api/sms-report/{smsReport}",
      *     summary="Get sms report detail",
      *     description="Endpoint to send SMS messages.",

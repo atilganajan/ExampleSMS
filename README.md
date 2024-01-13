@@ -19,11 +19,13 @@
      
 6. Uygulama anahtarını oluşturun: `php artisan key:generate`
 
-7. migrationları çalıştrın: `php artisan migrate`
- 
-10. `php artisan serve`
+7.`JWT Secret token'ı üretin `php artisan jwt:secret`
 
-11.  `php artisan queue:work`
+8. migrationları çalıştrın: `php artisan migrate`
+ 
+9. `php artisan serve`
+
+10.  `php artisan queue:work`
 
 ## Swagger UI
 - Swagger url `BASE_URL/api/documentation`
